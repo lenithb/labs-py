@@ -27,3 +27,25 @@ class Client(threading.Thread):
                 for client in connections:
                     if client.id != self.id:
                         client.socket.sendall(data)
+
+def newConnections(socket):
+    while True:
+        sock, address = socket.accept()
+        global total_connections
+        connections.append(Client(sock, address, total_connections, "Name", True))
+        connections[-1].start()
+        print("New connection at ID " + str(connections[-1].id) + " " + str(address))
+        total_connections += 1
+
+def main():
+    host = input("Host: ")
+    port = int(input("Port: "))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((host, port))
+    sock.listen(5)
+    
+    # Inicia el hilo para aceptar nuevas conexiones
+    threading.Thread(target=newConnections, args=(sock,)).start()
+
+if __name__ == "__main__":
+    main()
