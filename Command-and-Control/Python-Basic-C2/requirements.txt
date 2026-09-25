@@ -1,2 +1,3 @@
 # las demás librerias son nativas de Python.
 colorama==0.4.6
+cryptography
