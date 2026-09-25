@@ -2,6 +2,14 @@
 
 Chat multi-cliente evolucionado a un C2 básico operador/agente, todavía falta Cifrado con Fernet.
 
+## Demo
+
+![demo](assets/demo.png)
+
+## Auto-reconexión
+
+![reconnect](assets/reconnect.png)
+
 ## Arquitectura
 
 ```
