@@ -1,6 +1,6 @@
 # Command-and-Control
 
-Chat multi-cliente evolucionado a un C2 básico operador/agente, todavía falta Cifrado con Fernet.
+Chat multi-cliente evolucionado a un C2 básico operador/agente, ya agregue Fernet con Cryptography.
 
 ## Demo
 
@@ -54,7 +54,15 @@ Desde el servidor:
 
 ## Dependencias
 
-Solo librería estándar de Python — no requiere `pip install`.
+```bash
+sudo apt install python3-cryptography
+```
+
+O con pip:
+
+```bash
+pip install cryptography --break-system-packages
+```
 
 ## Aviso
 
