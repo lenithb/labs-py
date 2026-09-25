@@ -10,6 +10,7 @@ Para desarrollar y probar los proyectos de este repositorio utilizo principalmen
 
 - Parrot OS
 - Linux Mint
+- Kali Linux
 - Hack The Box (HTB)
 - Máquinas virtuales
 - Laboratorios propios y entornos controlados

