@@ -2,6 +2,10 @@
 
 Scripts de redes usando sockets a bajo nivel.
 
+## Scanner.py
+
+![scanner](assets/scanner.png)
+
 ## Contenido
 
 | Script       | Descripción                    |
