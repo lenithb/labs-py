@@ -1,48 +1,20 @@
-# CyberSec
+# labs-py
 
-Este repositorio lo utilizo para guardar y documentar mis prácticas de ciberseguridad, redes y programación.
+Repositorio de prácticas de ciberseguridad, redes y programación en Python.
 
-Aquí voy subiendo diferentes proyectos, scripts y ejercicios a medida que avanzo en mi aprendizaje. Cada carpeta puede contener un proyecto independiente con su propia documentación.
+## Estructura
 
-## Entornos que utilizo
-
-Para desarrollar y probar los proyectos de este repositorio utilizo principalmente:
-
-- Parrot OS
-- Linux Mint
-- Hack The Box (HTB)
-- Máquinas virtuales
-- Laboratorios propios y entornos controlados
-
-## Contenido
-
-En este repositorio voy a trabajar con diferentes conceptos relacionados con:
-
-- Python
-- Redes
-- Sockets
-- Comunicación cliente-servidor
-- `threading`
-- `sys`
-- Automatización
-- Enumeración
-- Protocolos
-- Scripts para laboratorios
-- Ciberseguridad y seguridad ofensiva en entornos autorizados
-
-La estructura del repositorio irá creciendo a medida que agregue nuevos proyectos.
-
-Actualmente, la estructura puede ser similar a esta:
-
-```text
-cybersec/
+```
+labs-py/
 ├── Command-and-Control/
+│   ├── assets/
 │   ├── client.py
 │   ├── server.py
 │   └── README.md
 │
 ├── Networking/
-│   └── ...
+│   ├── scanner.py
+│   └── README.md
 │
 ├── Enumeration/
 │   └── ...
@@ -50,32 +22,30 @@ cybersec/
 └── README.md
 ```
 
-Cada proyecto puede tener su propio archivo `README.md` para explicar su funcionamiento, los conceptos utilizados y el entorno donde fue probado.
+## Contenido
+
+| Carpeta               | Descripción                                  |
+| --------------------- | -------------------------------------------- |
+| `Command-and-Control` | C2 básico operador/agente con cifrado Fernet |
+| `Networking`          | Port scanner TCP, sniffer, UDP               |
+| `Enumeration`         | Scripts de enumeración para laboratorios     |
+
+## Tests
+
+<img src="Command-and-Control/assets/demo.png" width="700"/>
+
+<img src="Networking/assets/scanner.png" width="700"/>
+
+## Conceptos
+
+`Python` `Sockets` `Redes` `Threading` `Protocolos` `Comunicación cliente-servidor` `Automatización` `Enumeración` `Seguridad ofensiva`
+
+## Entornos
+
+- Kali Linux (VM en KVM/QEMU)
+- Linux Mint
+- Hack The Box
 
 ## Disclaimer
 
-Este repositorio tiene fines exclusivamente educativos y forma parte de mi proceso de aprendizaje en ciberseguridad y programación.
-
-Los scripts y proyectos que publico aquí están desarrollados para ser utilizados únicamente en entornos controlados y autorizados, como:
-
-- Hack The Box
-- Máquinas virtuales propias
-- Laboratorios locales
-- Redes de prueba
-- Sistemas sobre los cuales tengo autorización explícita
-
-No utilizo ni pretendo utilizar el contenido de este repositorio contra sistemas, redes, dispositivos o servicios de terceros sin autorización.
-
-Algunos scripts pueden incluir conceptos o técnicas relacionadas con redes y seguridad que, utilizados fuera de un entorno autorizado, podrían tener consecuencias no deseadas. Mi objetivo es comprender cómo funcionan estas tecnologías mediante la práctica, la experimentación y el análisis en laboratorios controlados.
-
-Soy responsable del uso que hago de los conocimientos y herramientas desarrollados en este repositorio y me comprometo a utilizarlos de forma legal y ética.
-
-## Sobre este repositorio
-
-Este repositorio representa mi proceso de aprendizaje, por lo que algunos proyectos pueden ser experimentales, modificarse con el tiempo o contener código que posteriormente mejoraré.
-
-Mi intención es utilizar este espacio para documentar mi progreso y mantener organizados los diferentes proyectos y prácticas que vaya realizando.
-
----
-
-**Repositorio personal de aprendizaje y práctica en ciberseguridad.**
+Fines exclusivamente educativos. Todo el contenido está desarrollado para entornos controlados y autorizados: Hack The Box, máquinas virtuales propias y laboratorios locales. No utilizo ni pretendo utilizar este contenido contra sistemas de terceros sin autorización.
