@@ -48,4 +48,4 @@ labs-py/
 
 ## Disclaimer
 
-Fines exclusivamente educativos. Todo el contenido está desarrollado para entornos controlados y autorizados: Hack The Box, máquinas virtuales propias y laboratorios locales. No utilizo ni pretendo utilizar este contenido contra sistemas de terceros sin autorización.
+Fines exclusivamente educativos. Todo el contenido está desarrollado para entornos controlados y autorizados: Hack The Box, TryHackMe, máquinas virtuales propias y laboratorios locales. No utilizo ni pretendo utilizar este contenido contra sistemas de terceros sin autorización.
